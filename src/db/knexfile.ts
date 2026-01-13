@@ -8,7 +8,7 @@ const config: { [key: string]: Knex.Config } = {
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432', 10),
       user: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
+      password: process.env.DB_PASSWORD || 'root',
       database: process.env.DB_NAME || 'portfolio_db',
     },
     pool: {
@@ -16,7 +16,7 @@ const config: { [key: string]: Knex.Config } = {
       max: 10,
     },
     migrations: {
-      directory: path.join(__dirname, 'migrations'),
+      directory: path.join(__dirname, 'migrations', 'data'),
       extension: 'ts',
     },
     seeds: {
@@ -39,7 +39,7 @@ const config: { [key: string]: Knex.Config } = {
       max: 10,
     },
     migrations: {
-      directory: path.join(__dirname, 'migrations'),
+      directory: path.join(__dirname, 'migrations', 'data'),
       extension: 'ts',
     },
     seeds: {
