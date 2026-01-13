@@ -2,7 +2,8 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.withSchema('data').createTable('experience', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
+    table.increments('id').primary();
+    table.uuid('uuid').notNullable().defaultTo(knex.raw('gen_random_uuid()'));
     table.string('role').notNullable();
     table.string('company').notNullable();
     table.date('start_date').notNullable();
@@ -14,6 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.raw(`
     CREATE INDEX idx_experience_start_date ON data.experience(start_date);
+    CREATE UNIQUE INDEX idx_experience_uuid ON data.experience(uuid);
   `);
 }
 
