@@ -2,8 +2,9 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.withSchema('data').createTable('case_studies', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
-    table.uuid('project_id').notNullable();
+    table.increments('id').primary();
+    table.uuid('uuid').notNullable().defaultTo(knex.raw('gen_random_uuid()'));
+    table.integer('project_id').notNullable();
     table.text('problem').nullable();
     table.text('challenges').nullable();
     table.text('architecture').nullable();
@@ -22,6 +23,7 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.raw(`
     CREATE UNIQUE INDEX idx_case_studies_project_id ON data.case_studies(project_id);
+    CREATE UNIQUE INDEX idx_case_studies_uuid ON data.case_studies(uuid);
   `);
 }
 

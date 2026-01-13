@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 // Config
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
+import authConfig from './config/auth.config';
 
 // Database
 import { DatabaseConnection } from './db/database.connection';
@@ -36,16 +37,24 @@ import { CaseStudiesController } from './controller/case-studies/case-studies.co
 import { ContactController } from './controller/contact/contact.controller';
 import { SiteConfigController } from './controller/site-config/site-config.controller';
 
+// Auth
+import { AuthController } from './controller/auth/auth.controller';
+import { AuthService } from './services/auth/auth.service';
+import { AdminSessionQuery } from './models/queries/admin-session.query';
+import { AdminUserQuery } from './models/queries/admin-user.query';
+import { JwtService } from '@nestjs/jwt';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig],
+      load: [appConfig, databaseConfig, authConfig],
       envFilePath: ['.env.local', '.env'],
     }),
   ],
   controllers: [
     AppController,
+    AuthController,
     ProjectsController,
     CaseStudiesController,
     ContactController,
@@ -53,6 +62,11 @@ import { SiteConfigController } from './controller/site-config/site-config.contr
   ],
   providers: [
     AppService,
+    AuthService,
+    AdminUserQuery,
+    AdminSessionQuery,  
+    JwtService,
+    ConfigService,  
     // Core
     ResponseService,
     LoggerService,

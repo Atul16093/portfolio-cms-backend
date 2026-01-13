@@ -18,6 +18,7 @@ const config: { [key: string]: Knex.Config } = {
     migrations: {
       directory: path.join(__dirname, 'migrations', 'data'),
       extension: 'ts',
+      schemaName: 'data',
     },
     seeds: {
       directory: path.join(__dirname, 'seeds'),
@@ -41,6 +42,7 @@ const config: { [key: string]: Knex.Config } = {
     migrations: {
       directory: path.join(__dirname, 'migrations', 'data'),
       extension: 'ts',
+      schemaName: 'data',
     },
     seeds: {
       directory: path.join(__dirname, 'seeds'),
