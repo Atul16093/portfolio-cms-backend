@@ -21,18 +21,25 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 // Models
 import { ProjectQuery } from './models/queries/project.query';
+import { ProjectsQuery } from './models/queries/projects.query';
+import { ProjectTechStackQuery } from './models/queries/project-tech-stack.query';
+import { TechStackQuery } from './models/queries/tech-stack.query';
 import { CaseStudyQuery } from './models/queries/case-study.query';
 import { ContactQuery } from './models/queries/contact.query';
 import { SiteConfigQuery } from './models/queries/site-config.query';
 
 // Services
 import { ProjectService } from './services/projects/project.service';
+import { ProjectsService } from './services/cms-projects/projects.service';
+import { CmsProjectsService } from './services/cms-projects/cms-projects.service';
 import { CaseStudyService } from './services/case-studies/case-study.service';
 import { ContactService } from './services/contact/contact.service';
 import { SiteConfigService } from './services/site-config/site-config.service';
 
 // Controllers
 import { ProjectsController } from './controller/projects/projects.controller';
+import { CmsProjectsController } from './controller/cms-projects/cms-projects.controller';
+import { CmsTechStackController } from './controller/cms-tech-stack/cms-tech-stack.controller';
 import { CaseStudiesController } from './controller/case-studies/case-studies.controller';
 import { ContactController } from './controller/contact/contact.controller';
 import { SiteConfigController } from './controller/site-config/site-config.controller';
@@ -56,6 +63,8 @@ import { JwtService } from '@nestjs/jwt';
     AppController,
     AuthController,
     ProjectsController,
+    CmsProjectsController,
+    CmsTechStackController,
     CaseStudiesController,
     ContactController,
     SiteConfigController,
@@ -87,11 +96,16 @@ import { JwtService } from '@nestjs/jwt';
     SchemaManager,
     // Models
     ProjectQuery,
+    ProjectsQuery,
+    ProjectTechStackQuery,
+    TechStackQuery,
     CaseStudyQuery,
     ContactQuery,
     SiteConfigQuery,
     // Services
     ProjectService,
+    ProjectsService,
+    CmsProjectsService,
     CaseStudyService,
     ContactService,
     SiteConfigService,
