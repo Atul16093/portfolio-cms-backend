@@ -3,6 +3,7 @@ import { DatabaseConnection } from '../../db/database.connection';
 import { ProjectsQuery } from '../../models/queries/projects.query';
 import { CreateProjectDto } from '../../dtos/projects/create-project.dto';
 import { ProjectResponseDto } from '../../dtos/projects/project-response.dto';
+import { ActivityLogService } from '../activity-log/activity-log.service';
 
 /**
  * Service layer for CMS project creation operations
@@ -14,6 +15,7 @@ export class ProjectsService {
   constructor(
     private projectsQuery: ProjectsQuery,
     private dbConnection: DatabaseConnection,
+    private activityLogService: ActivityLogService,
   ) {}
 
   /**
@@ -50,6 +52,16 @@ export class ProjectsService {
       if (projectData.techStackIds && projectData.techStackIds.length > 0) {
         await this.projectsQuery.attachTechStack(trx, projectRow.id, projectData.techStackIds);
       }
+
+      // Log activity: project created or published based on status
+      const activityType = projectData.status === 'active' ? 'PROJECT_PUBLISHED' : 'PROJECT_CREATED';
+      await this.activityLogService.logProjectActivity(
+        activityType,
+        projectRow.id,
+        projectData.title,
+        undefined, // adminUserId not available in this context
+        trx,
+      );
 
       // Commit transaction
       await trx.commit();

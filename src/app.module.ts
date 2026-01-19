@@ -24,25 +24,33 @@ import { ProjectQuery } from './models/queries/project.query';
 import { ProjectsQuery } from './models/queries/projects.query';
 import { ProjectTechStackQuery } from './models/queries/project-tech-stack.query';
 import { TechStackQuery } from './models/queries/tech-stack.query';
+import { DashboardQuery } from './models/queries/dashboard.query';
+import { ActivityLogQuery } from './models/queries/activity-log.query';
 import { CaseStudyQuery } from './models/queries/case-study.query';
 import { ContactQuery } from './models/queries/contact.query';
 import { SiteConfigQuery } from './models/queries/site-config.query';
+import { ExperienceQuery } from './models/queries/experience.query';
 
 // Services
 import { ProjectService } from './services/projects/project.service';
 import { ProjectsService } from './services/cms-projects/projects.service';
 import { CmsProjectsService } from './services/cms-projects/cms-projects.service';
+import { DashboardService } from './services/dashboard/dashboard.service';
+import { ActivityLogService } from './services/activity-log/activity-log.service';
 import { CaseStudyService } from './services/case-studies/case-study.service';
 import { ContactService } from './services/contact/contact.service';
 import { SiteConfigService } from './services/site-config/site-config.service';
+import { CmsExperienceService } from './services/cms-experience/cms-experience.service';
 
 // Controllers
 import { ProjectsController } from './controller/projects/projects.controller';
 import { CmsProjectsController } from './controller/cms-projects/cms-projects.controller';
 import { CmsTechStackController } from './controller/cms-tech-stack/cms-tech-stack.controller';
+import { DashboardController } from './controller/dashboard/dashboard.controller';
 import { CaseStudiesController } from './controller/case-studies/case-studies.controller';
 import { ContactController } from './controller/contact/contact.controller';
 import { SiteConfigController } from './controller/site-config/site-config.controller';
+import { CmsExperienceController } from './controller/cms-experience/cms-experience.controller';
 
 // Auth
 import { AuthController } from './controller/auth/auth.controller';
@@ -65,9 +73,11 @@ import { JwtService } from '@nestjs/jwt';
     ProjectsController,
     CmsProjectsController,
     CmsTechStackController,
+    DashboardController,
     CaseStudiesController,
     ContactController,
     SiteConfigController,
+    CmsExperienceController,
   ],
   providers: [
     AppService,
@@ -99,16 +109,22 @@ import { JwtService } from '@nestjs/jwt';
     ProjectsQuery,
     ProjectTechStackQuery,
     TechStackQuery,
+    DashboardQuery,
+    ActivityLogQuery,
     CaseStudyQuery,
     ContactQuery,
     SiteConfigQuery,
+    ExperienceQuery,
     // Services
     ProjectService,
     ProjectsService,
     CmsProjectsService,
+    DashboardService,
+    ActivityLogService,
     CaseStudyService,
     ContactService,
     SiteConfigService,
+    CmsExperienceService,
   ],
 })
 export class AppModule {}

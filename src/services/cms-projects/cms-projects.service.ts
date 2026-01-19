@@ -6,7 +6,7 @@ import { TechStackQuery } from '../../models/queries/tech-stack.query';
 import { UpdateProjectDto } from '../../dtos/projects/update-project.dto';
 import { ProjectListItemDto, ProjectEditDto } from '../../dtos/projects/project-response.dto';
 import { TechStackGrouped } from '../../models/queries/tech-stack.query';
-
+import { ActivityLogService } from '../activity-log/activity-log.service';
 /**
  * Service layer for CMS project operations
  * Contains business logic and orchestration - NO database queries directly
@@ -19,6 +19,7 @@ export class CmsProjectsService {
     private projectTechStackQuery: ProjectTechStackQuery,
     private techStackQuery: TechStackQuery,
     private dbConnection: DatabaseConnection,
+    private activityLogService: ActivityLogService,
   ) {}
 
   /**
@@ -101,6 +102,16 @@ export class CmsProjectsService {
       
       // Sync associations (delete old, insert new)
       await this.projectTechStackQuery.syncTechStack(trx, updatedProjectRow.id, validTechStackIds);
+
+      // Log activity: project updated
+      // Note: adminUserId would need to be passed from controller via request context
+      await this.activityLogService.logProjectActivity(
+        'PROJECT_UPDATED',
+        updatedProjectRow.id,
+        input.title || existingProject.title,
+        undefined, // adminUserId - would need request context
+        trx,
+      );
 
       // Commit transaction
       await trx.commit();
