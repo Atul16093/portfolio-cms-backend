@@ -41,6 +41,7 @@ import { CaseStudyService } from './services/case-studies/case-study.service';
 import { ContactService } from './services/contact/contact.service';
 import { SiteConfigService } from './services/site-config/site-config.service';
 import { CmsExperienceService } from './services/cms-experience/cms-experience.service';
+import { CmsTechStackService } from './services/cms-tech-stack/cms-tech-stack.service';
 
 // Controllers
 import { ProjectsController } from './controller/projects/projects.controller';
@@ -125,6 +126,7 @@ import { JwtService } from '@nestjs/jwt';
     ContactService,
     SiteConfigService,
     CmsExperienceService,
+    CmsTechStackService,
   ],
 })
 export class AppModule {}

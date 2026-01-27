@@ -5,7 +5,7 @@ import { ProjectTechStackQuery } from '../../models/queries/project-tech-stack.q
 import { TechStackQuery } from '../../models/queries/tech-stack.query';
 import { UpdateProjectDto } from '../../dtos/projects/update-project.dto';
 import { ProjectListItemDto, ProjectEditDto } from '../../dtos/projects/project-response.dto';
-import { TechStackGrouped } from '../../models/queries/tech-stack.query';
+import { TechStackGroupedLegacy } from '../../models/queries/tech-stack.query';
 import { ActivityLogService } from '../activity-log/activity-log.service';
 /**
  * Service layer for CMS project operations
@@ -62,7 +62,7 @@ export class CmsProjectsService {
    * Get all tech stack items grouped by category
    * Business logic: None - delegates to query layer which handles grouping
    */
-  async getTechStackGrouped(): Promise<TechStackGrouped> {
+  async getTechStackGrouped(): Promise<TechStackGroupedLegacy> {
     return this.techStackQuery.findAllGroupedByCategory();
   }
 

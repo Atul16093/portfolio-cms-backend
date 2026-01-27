@@ -22,6 +22,17 @@ export class CmsExperienceService {
   }
 
   /**
+   * Get a single experience by id (id is uuid; numeric id not exposed)
+   */
+  async findOne(id: string): Promise<any> {
+    const experience = await this.experienceQuery.findByUuid(id);
+    if (!experience) {
+      throw new NotFoundException(`Experience with ID ${id} not found`);
+    }
+    return experience;
+  }
+
+  /**
    * Create a new experience
    * Business logic:
    * - Date validation is handled by Zod schema
@@ -49,20 +60,14 @@ export class CmsExperienceService {
   }
 
   /**
-   * Update an experience by ID
-   * Business logic:
-   * - Validates experience exists
-   * - Validates date range
-   * - Updates all fields (no partial updates)
+   * Update an experience by id (id is uuid; numeric id not exposed)
    */
-  async update(id: number, input: UpdateExperienceDto): Promise<any> {
-    // Business logic: Verify experience exists
-    const existingExperience = await this.experienceQuery.findByIdNumber(id);
+  async update(id: string, input: UpdateExperienceDto): Promise<any> {
+    const existingExperience = await this.experienceQuery.findByUuid(id);
     if (!existingExperience) {
       throw new NotFoundException(`Experience with ID ${id} not found`);
     }
 
-    // Business logic: Validate date range
     if (input.end_date && new Date(input.start_date) >= new Date(input.end_date)) {
       throw new BadRequestException({
         success: false,
@@ -79,7 +84,7 @@ export class CmsExperienceService {
       });
     }
 
-    const updatedExperience = await this.experienceQuery.updateById(id, input);
+    const updatedExperience = await this.experienceQuery.updateByUuid(id, input);
     if (!updatedExperience) {
       throw new NotFoundException(`Experience with ID ${id} not found`);
     }
@@ -88,19 +93,15 @@ export class CmsExperienceService {
   }
 
   /**
-   * Toggle visibility status for an experience
-   * Business logic:
-   * - Validates experience exists
-   * - Updates visibility status
+   * Toggle visibility by id (id is uuid)
    */
-  async toggleVisibility(id: number, input: ToggleVisibilityDto): Promise<any> {
-    // Business logic: Verify experience exists
-    const existingExperience = await this.experienceQuery.findByIdNumber(id);
+  async toggleVisibility(id: string, input: ToggleVisibilityDto): Promise<any> {
+    const existingExperience = await this.experienceQuery.findByUuid(id);
     if (!existingExperience) {
       throw new NotFoundException(`Experience with ID ${id} not found`);
     }
 
-    const updatedExperience = await this.experienceQuery.updateVisibility(id, input.is_visible);
+    const updatedExperience = await this.experienceQuery.updateVisibilityByUuid(id, input.is_visible);
     if (!updatedExperience) {
       throw new NotFoundException(`Experience with ID ${id} not found`);
     }
@@ -109,18 +110,14 @@ export class CmsExperienceService {
   }
 
   /**
-   * Delete an experience by ID
-   * Business logic:
-   * - Validates experience exists before deletion
-   * - Performs hard delete
+   * Delete an experience by id (id is uuid; hard delete)
    */
-  async delete(id: number): Promise<void> {
-    // Business logic: Verify experience exists
-    const existingExperience = await this.experienceQuery.findByIdNumber(id);
+  async delete(id: string): Promise<void> {
+    const existingExperience = await this.experienceQuery.findByUuid(id);
     if (!existingExperience) {
       throw new NotFoundException(`Experience with ID ${id} not found`);
     }
 
-    await this.experienceQuery.deleteById(id);
+    await this.experienceQuery.deleteByUuid(id);
   }
 }

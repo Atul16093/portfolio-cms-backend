@@ -9,9 +9,9 @@ import knex, { Knex } from 'knex';
 import knexConfig from '../db/knexfile';
 
 // Get email and password from command line arguments
-const email = process.argv[2];
-const password = process.argv[3];
-
+const email = "admin@example.com"
+const password = "password123"
+console.log(email, password);
 /**
  * Validates email and password inputs from command line
  */

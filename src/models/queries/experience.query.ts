@@ -16,6 +16,14 @@ export class ExperienceQuery extends BaseQuery {
   }
 
   /**
+   * DB column `description` is jsonb in current schema.
+   * We store a plain text description as a JSON string for compatibility.
+   */
+  private toJsonbText(value: string): string {
+    return JSON.stringify(value);
+  }
+
+  /**
    * Map database row to experience entity
    * Transforms snake_case DB columns to camelCase format
    * Formats date fields to YYYY-MM-DD string format
@@ -35,13 +43,20 @@ export class ExperienceQuery extends BaseQuery {
       return null;
     };
 
+    // Frontend receives `id` as the UUID value; numeric id never exposed.
     return {
-      id: row.id,
+      id: row.uuid,
       company: row.company,
       role: row.role,
       start_date: formatDate(row.start_date),
       end_date: formatDate(row.end_date),
-      description: row.description,
+      // If jsonb comes back as string, keep it; if object, stringify.
+      description:
+        row.description == null
+          ? null
+          : typeof row.description === 'string'
+            ? row.description
+            : JSON.stringify(row.description),
       order_index: row.order_index,
       is_visible: row.is_visible,
       created_at: row.created_at,
@@ -72,7 +87,7 @@ export class ExperienceQuery extends BaseQuery {
       role: input.role,
       start_date: input.start_date,
       end_date: input.end_date || null,
-      description: input.description,
+      description: this.toJsonbText(input.description),
       order_index: input.order_index,
       is_visible: input.is_visible ?? true,
       created_at: now,
@@ -87,24 +102,30 @@ export class ExperienceQuery extends BaseQuery {
   }
 
   /**
-   * Update experience by ID
-   * Updates all editable fields
-   * Returns the updated experience or null if not found
+   * Find experience by UUID (id in response is uuid; we look up by uuid internally)
    */
-  async updateById(id: number, input: UpdateExperienceDto): Promise<any | null> {
+  async findByUuid(uuid: string): Promise<any | null> {
+    const row = await this.knex(this.getTableName()).where({ uuid }).first();
+    return row ? this.mapToEntity(row) : null;
+  }
+
+  /**
+   * Update experience by UUID
+   */
+  async updateByUuid(uuid: string, input: UpdateExperienceDto): Promise<any | null> {
     const updateData = {
       company: input.company,
       role: input.role,
       start_date: input.start_date,
       end_date: input.end_date || null,
-      description: input.description,
+      description: this.toJsonbText(input.description),
       order_index: input.order_index,
       is_visible: input.is_visible,
       updated_at: new Date(),
     };
 
     const [row] = await this.knex(this.getTableName())
-      .where({ id })
+      .where({ uuid })
       .update(updateData)
       .returning('*');
 
@@ -112,12 +133,11 @@ export class ExperienceQuery extends BaseQuery {
   }
 
   /**
-   * Update visibility status for an experience
-   * Returns the updated experience or null if not found
+   * Update visibility by UUID
    */
-  async updateVisibility(id: number, isVisible: boolean): Promise<any | null> {
+  async updateVisibilityByUuid(uuid: string, isVisible: boolean): Promise<any | null> {
     const [row] = await this.knex(this.getTableName())
-      .where({ id })
+      .where({ uuid })
       .update({
         is_visible: isVisible,
         updated_at: new Date(),
@@ -128,20 +148,9 @@ export class ExperienceQuery extends BaseQuery {
   }
 
   /**
-   * Delete experience by ID
-   * Hard delete - removes the record from database
+   * Delete experience by UUID (hard delete)
    */
-  async deleteById(id: number): Promise<void> {
-    await this.knex(this.getTableName()).where({ id }).delete();
-  }
-
-  /**
-   * Find experience by numeric ID
-   * Returns the experience or null if not found
-   * Note: Uses numeric ID since experience table uses integer primary key
-   */
-  async findByIdNumber(id: number): Promise<any | null> {
-    const row = await this.knex(this.getTableName()).where({ id }).first();
-    return row ? this.mapToEntity(row) : null;
+  async deleteByUuid(uuid: string): Promise<void> {
+    await this.knex(this.getTableName()).where({ uuid }).delete();
   }
 }

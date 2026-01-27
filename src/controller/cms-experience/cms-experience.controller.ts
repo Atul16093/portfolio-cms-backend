@@ -10,7 +10,6 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -59,6 +58,24 @@ export class CmsExperienceController {
     return this.responseService.success(experiences);
   }
 
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get experience by ID',
+    description: 'Retrieve a single experience. ID in path/response is uuid (numeric id not exposed).',
+  })
+  @ApiParam({ name: 'id', description: 'Experience ID (uuid value)', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Experience details',
+    type: StandardApiResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Experience not found' })
+  async findOne(@Param('id') id: string) {
+    const experience = await this.cmsExperienceService.findOne(id);
+    return this.responseService.success(experience);
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -82,9 +99,9 @@ export class CmsExperienceController {
   @Put(':id')
   @ApiOperation({
     summary: 'Update an experience',
-    description: 'Update an experience by ID (all fields required, no partial updates) (Admin only)',
+    description: 'Update by ID (id is uuid). All fields required, no partial updates.',
   })
-  @ApiParam({ name: 'id', description: 'Experience ID', type: Number })
+  @ApiParam({ name: 'id', description: 'Experience ID (uuid value)', type: String })
   @ApiResponse({
     status: 200,
     description: 'Experience updated successfully',
@@ -94,11 +111,9 @@ export class CmsExperienceController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Experience not found' })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(new ZodValidationPipe(updateExperienceSchema)) body: UpdateExperienceDto,
   ) {
-    // Validation handled by ZodValidationPipe
-    // Business logic handled by service layer
     const experience = await this.cmsExperienceService.update(id, body);
     return this.responseService.updated(experience);
   }
@@ -106,9 +121,9 @@ export class CmsExperienceController {
   @Patch(':id/visibility')
   @ApiOperation({
     summary: 'Toggle experience visibility',
-    description: 'Update the visibility status of an experience (Admin only)',
+    description: 'Update visibility by ID (id is uuid).',
   })
-  @ApiParam({ name: 'id', description: 'Experience ID', type: Number })
+  @ApiParam({ name: 'id', description: 'Experience ID (uuid value)', type: String })
   @ApiResponse({
     status: 200,
     description: 'Visibility status updated successfully',
@@ -118,11 +133,9 @@ export class CmsExperienceController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Experience not found' })
   async toggleVisibility(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(new ZodValidationPipe(toggleVisibilitySchema)) body: ToggleVisibilityDto,
   ) {
-    // Validation handled by ZodValidationPipe
-    // Business logic handled by service layer
     const experience = await this.cmsExperienceService.toggleVisibility(id, body);
     return this.responseService.success(experience);
   }
@@ -131,9 +144,9 @@ export class CmsExperienceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Delete an experience',
-    description: 'Delete an experience by ID (hard delete) (Admin only)',
+    description: 'Delete by ID (id is uuid, hard delete).',
   })
-  @ApiParam({ name: 'id', description: 'Experience ID', type: Number })
+  @ApiParam({ name: 'id', description: 'Experience ID (uuid value)', type: String })
   @ApiResponse({
     status: 200,
     description: 'Experience deleted successfully',
@@ -141,8 +154,7 @@ export class CmsExperienceController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Experience not found' })
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    // Business logic handled by service layer
+  async delete(@Param('id') id: string) {
     await this.cmsExperienceService.delete(id);
     return this.responseService.deleted();
   }
