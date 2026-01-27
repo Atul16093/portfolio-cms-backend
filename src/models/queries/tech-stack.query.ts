@@ -52,19 +52,15 @@ export class TechStackQuery extends BaseQuery {
   }
 
   /**
-   * Get tech stack grouped by category, visible only by default, sorted by priority ASC
+   * Get tech stack grouped by category, sorted by priority ASC.
+   * Selects only columns that exist in the current schema. Does not filter by is_visible
+   * so the query works before migration 20260112000013; mapToItem defaults is_visible to true.
    */
-  async getGroupedVisible(visibleOnly: boolean = true): Promise<TechStackGrouped> {
-    let q = this.knex(this.getTableName())
-      .select('id', 'name', 'category', 'icon_url', 'priority', 'is_visible')
+  async getGroupedVisible(_visibleOnly: boolean = true): Promise<TechStackGrouped> {
+    const rows = await this.knex(this.getTableName())
+      .select('id', 'name', 'category', 'icon_url', 'priority')
       .orderBy('category', 'asc')
       .orderBy('priority', 'asc');
-
-    if (visibleOnly) {
-      q = q.where('is_visible', true);
-    }
-
-    const rows = await q;
     const grouped: TechStackGrouped = {};
     for (const row of rows) {
       const item = this.mapToItem(row);
@@ -144,7 +140,7 @@ export class TechStackQuery extends BaseQuery {
   /**
    * Find by id
    */
-  async findById(id: number): Promise<TechStackItem | null> {
+  async findById(id: number | string): Promise<TechStackItem | null> {
     const row = await this.knex(this.getTableName()).where({ id }).first();
     return row ? this.mapToItem(row) : null;
   }

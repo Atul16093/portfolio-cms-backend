@@ -56,6 +56,7 @@ export class CmsTechStackController {
   async getGrouped(@Query('visibleOnly') visibleOnly?: string) {
     const only = visibleOnly !== 'false';
     const data = await this.cmsTechStackService.getGrouped(only);
+    console.log("Data ", data)
     return this.responseService.success(data);
   }
 

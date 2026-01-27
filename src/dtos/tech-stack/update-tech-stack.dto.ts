@@ -9,7 +9,7 @@ const categoryEnum = z.enum([
   'realtime',
   'messaging',
   'tools',
-], { errorMap: () => ({ message: 'Category must be one of: backend, frontend, database, cloud, realtime, messaging, tools' }) });
+] as const);
 
 /**
  * Zod schema for updating a tech stack item

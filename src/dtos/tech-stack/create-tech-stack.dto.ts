@@ -9,7 +9,7 @@ const categoryEnum = z.enum([
   'realtime',
   'messaging',
   'tools',
-], { errorMap: () => ({ message: 'Category must be one of: backend, frontend, database, cloud, realtime, messaging, tools' }) });
+] as const);
 
 /**
  * Zod schema for creating a tech stack item
@@ -17,7 +17,7 @@ const categoryEnum = z.enum([
  */
 export const createTechStackSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  category: categoryEnum,
+  category: z.string().min(1, 'Category is required'),
   icon_url: z
     .union([z.string().url(), z.literal(''), z.null()])
     .optional()
