@@ -175,11 +175,10 @@ export class ProjectsQuery extends BaseQuery {
   }
 
   /**
-   * Fetch a single project by ID with aggregated tech stack
-   * Uses same JSON aggregation pattern as findAllWithTechStack for consistency
+   * Shared select + join for project with aggregated tech stack (jsonb array)
    */
-  async findByIdWithTechStack(id: number): Promise<ProjectResponseDto | null> {
-    const [row] = await this.knex(this.getTableName())
+  private projectWithTechStackSelect() {
+    return this.knex(this.getTableName())
       .select(
         'data.projects.id',
         'data.projects.uuid',
@@ -189,7 +188,6 @@ export class ProjectsQuery extends BaseQuery {
         'data.projects.is_featured',
         'data.projects.status',
         'data.projects.created_at',
-        // Aggregate tech stack as JSON array using PostgreSQL JSON functions
         this.knex.raw(
           `COALESCE(
             JSON_AGG(
@@ -206,7 +204,6 @@ export class ProjectsQuery extends BaseQuery {
       )
       .leftJoin('data.project_tech_stack as pts', 'data.projects.id', 'pts.project_id')
       .leftJoin('data.tech_stack as ts', 'pts.tech_stack_id', 'ts.id')
-      .where('data.projects.id', id)
       .groupBy(
         'data.projects.id',
         'data.projects.uuid',
@@ -216,9 +213,36 @@ export class ProjectsQuery extends BaseQuery {
         'data.projects.is_featured',
         'data.projects.status',
         'data.projects.created_at',
-      )
-      .limit(1);
+      );
+  }
 
+  /**
+   * Fetch a single project by ID with aggregated tech stack (jsonb array)
+   */
+  async findByIdWithTechStack(id: number): Promise<ProjectResponseDto | null> {
+    const [row] = await this.projectWithTechStackSelect()
+      .where('data.projects.id', id)
+      .limit(1);
+    return row ? this.mapToProjectEntity(row) : null;
+  }
+
+  /**
+   * Fetch a single project by UUID with aggregated tech stack (jsonb array)
+   */
+  async findByUuidWithTechStack(uuid: string): Promise<ProjectResponseDto | null> {
+    const [row] = await this.projectWithTechStackSelect()
+      .where('data.projects.uuid', uuid)
+      .limit(1);
+    return row ? this.mapToProjectEntity(row) : null;
+  }
+
+  /**
+   * Fetch a single project by slug with aggregated tech stack (jsonb array)
+   */
+  async findBySlugWithTechStack(slug: string): Promise<ProjectResponseDto | null> {
+    const [row] = await this.projectWithTechStackSelect()
+      .where('data.projects.slug', slug)
+      .limit(1);
     return row ? this.mapToProjectEntity(row) : null;
   }
 
