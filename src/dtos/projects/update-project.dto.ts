@@ -10,7 +10,6 @@ export const updateProjectSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   slug: z
     .string()
-    .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase and kebab-case only')
     .min(1, 'Slug is required'),
   summary: z.string().optional().nullable(),
   status: z.enum(['active', 'inactive']),

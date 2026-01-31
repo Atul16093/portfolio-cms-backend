@@ -63,6 +63,7 @@ export class CmsProjectsController {
   async create(@Body(new ZodValidationPipe(createProjectSchema)) body: CreateProjectDto) {
     // Validation handled by ZodValidationPipe
     // Business logic handled by service layer
+    console.log("Body ", body);
     const project = await this.projectsService.create(body);
     return this.responseService.created(project);
   }
@@ -130,6 +131,7 @@ export class CmsProjectsController {
   ) {
     // Validation handled by ZodValidationPipe
     // Business logic handled by service layer
+    console.log("Body ", body);
     const project = await this.cmsProjectsService.update(uuid, body);
     return this.responseService.updated(project);
   }

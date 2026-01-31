@@ -49,12 +49,13 @@ export class CmsProjectsService {
       throw new NotFoundException(`Project with UUID ${uuid} not found`);
     }
 
-    // Fetch tech stack IDs for this project
-    const techStackIds = await this.projectTechStackQuery.getTechStackIdsByProjectId(projectRow.id);
-
+    // Fetch tech stack details
+    const techStackItems = await this.projectTechStackQuery.getTechStackInfoWithIds(projectRow.id);
+    console.log("***",techStackItems)
+    
     return {
       ...project,
-      techStackIds,
+      techStack: techStackItems,
     };
   }
 

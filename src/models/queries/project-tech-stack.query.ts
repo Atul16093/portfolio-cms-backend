@@ -27,6 +27,23 @@ export class ProjectTechStackQuery extends BaseQuery {
   }
 
   /**
+   * Get all tech stack info for a project
+   */
+  async getTechStackInfoWithIds(projectId: number): Promise<any[]> {
+    const rows = await this.knex('data.project_tech_stack')
+      .innerJoin('data.tech_stack', 'data.project_tech_stack.tech_stack_id', 'data.tech_stack.id')
+      .where({ 'data.project_tech_stack.project_id': projectId })
+      .select('data.tech_stack.id', 'data.tech_stack.name', 'data.tech_stack.category', 'data.tech_stack.icon_url');
+    
+    return rows.map((row) => ({
+      id : row.id,
+      name: row.name,
+      category: row.category,
+      iconUrl: row.icon_url,
+    }));
+  }
+
+  /**
    * Delete all tech stack associations for a project
    * Used when syncing tech stack during update
    */

@@ -327,9 +327,9 @@ export class ProjectsQuery extends BaseQuery {
   /**
    * Fetch project for edit page by UUID
    * Returns project with tech_stack_ids array instead of full tech stack objects
-   * Note: techStackIds should be fetched separately using ProjectTechStackQuery
+   * Note: techStackIds and techStack should be fetched separately/populated by the service
    */
-  async findForEdit(uuid: string): Promise<Omit<ProjectEditDto, 'techStackIds'> | null> {
+  async findForEdit(uuid: string): Promise<Omit<ProjectEditDto, 'techStackIds' | 'techStack'> | null> {
     const row = await this.knex(this.getTableName()).where({ uuid }).first();
 
     if (!row) {

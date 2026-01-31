@@ -147,6 +147,20 @@ export class TechStackQuery extends BaseQuery {
   }
 
   /**
+   * Find multiple items by IDs
+   */
+  async findByIds(ids: number[]): Promise<TechStackItem[]> {
+    if (!ids || ids.length === 0) return [];
+    
+    const rows = await this.knex(this.getTableName())
+      .whereIn('id', ids)
+      .select('id', 'name', 'category', 'icon_url', 'priority', 'is_visible')
+      .orderBy('name', 'asc');
+      
+    return rows.map(row => this.mapToItem(row));
+  }
+
+  /**
    * Find by name (for uniqueness check)
    */
   async findByName(name: string): Promise<{ id: number } | null> {

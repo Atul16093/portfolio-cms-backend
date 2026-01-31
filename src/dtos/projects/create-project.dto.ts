@@ -14,7 +14,7 @@ export const createProjectSchema = z.object({
   summary: z.string().optional(),
   status: z.enum(['active', 'inactive']).optional().default('active'),
   isFeatured: z.boolean().optional().default(false),
-  techStackIds: z.array(z.number().int().positive()).optional().default([]),
+  techStackIds: z.array(z.number().int().positive()),
 });
 
 export type CreateProjectDto = z.infer<typeof createProjectSchema>;

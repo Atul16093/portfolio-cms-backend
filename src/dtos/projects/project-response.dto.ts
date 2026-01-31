@@ -104,9 +104,8 @@ export class ProjectEditDto {
   status!: string;
 
   @ApiProperty({
-    description: 'Array of tech stack IDs',
-    type: [Number],
-    example: [1, 2, 3],
+    description: 'Associated tech stack',
+    type: [ProjectTechStackDto],
   })
-  techStackIds!: number[];
+  techStack!: ProjectTechStackDto[];
 }
