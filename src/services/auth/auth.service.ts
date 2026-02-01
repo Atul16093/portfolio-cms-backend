@@ -7,6 +7,7 @@ import { AdminUserQuery } from '../../models/queries/admin-user.query';
 import { AdminSessionQuery } from '../../models/queries/admin-session.query';
 import { LoginDto } from '../../dtos/auth/login.dto';
 import { RefreshTokenDto } from '../../dtos/auth/refresh-token.dto';
+import { ActivityLogService } from '../activity-log/activity-log.service';
 
 export interface TokenPayload {
   sub: number; // admin user id
@@ -32,6 +33,7 @@ export class AuthService {
     private adminSessionQuery: AdminSessionQuery,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private activityLogService: ActivityLogService,
   ) {}
 
   private getAuthConfig() {
@@ -161,6 +163,9 @@ export class AuthService {
     // Update last login
     await this.adminUserQuery.updateLastLoginAt(adminUser.id);
 
+    // Log activity: admin login
+    await this.activityLogService.logSessionActivity('ADMIN_LOGIN', adminUser.id, sessionId);
+
     return {
       accessToken,
       refreshToken,
@@ -285,6 +290,9 @@ export class AuthService {
 
     // Revoke session
     await this.adminSessionQuery.revokeSession(payload.sessionId);
+
+    // Log activity: session revoked (logout)
+    await this.activityLogService.logSessionActivity('SESSION_REVOKED', payload.sub, payload.sessionId);
   }
 
   /**

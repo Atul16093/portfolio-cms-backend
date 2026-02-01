@@ -17,6 +17,19 @@ export class ZodValidationPipe implements PipeTransform {
       return parsedValue;
     } catch (error) {
       if (error instanceof ZodError) {
+        // Ensure we have a valid ZodError with errors array
+        const errors = ResponseUtil.mapZodErrors(error);
+        throw new BadRequestException({
+          success: false,
+          code: 'VALIDATION_ERROR',
+          message: 'Validation failed',
+          errors,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      // Handle case where error might not be a ZodError instance
+      // but could still be a Zod validation error
+      if (error && typeof error === 'object' && 'errors' in error) {
         const errors = ResponseUtil.mapZodErrors(error);
         throw new BadRequestException({
           success: false,

@@ -9,6 +9,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -27,7 +28,13 @@ import {
 } from '../../common/validation/zod.schemas';
 import { ProjectCreateInput, ProjectUpdateInput, ProjectQueryOptions } from '../../domain/projects/project.types';
 import { StandardApiResponseDto } from '../../dtos/auth/auth-response.dto';
+import { AdminAuthGuard } from '../../common/guards/admin-auth.guard';
 
+/**
+ * Public API Controller for Projects
+ * Routes requests to service layer - NO business logic here
+ * Public endpoints for reading projects, admin-only for write operations
+ */
 @ApiTags('projects')
 @Controller('projects')
 export class ProjectsController {
@@ -69,6 +76,7 @@ export class ProjectsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiBearerAuth('JWT-auth')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Create new project', description: 'Create a new project (Admin only)' })
   @ApiResponse({ status: 201, description: 'Project created successfully', type: StandardApiResponseDto })
   @ApiResponse({ status: 400, description: 'Validation error' })
@@ -80,6 +88,7 @@ export class ProjectsController {
 
   @Put(':id')
   @ApiBearerAuth('JWT-auth')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Update project', description: 'Update an existing project (Admin only)' })
   @ApiParam({ name: 'id', description: 'Project ID', type: String })
   @ApiResponse({ status: 200, description: 'Project updated successfully', type: StandardApiResponseDto })
@@ -97,6 +106,7 @@ export class ProjectsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth('JWT-auth')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Delete project', description: 'Delete a project by ID (Admin only)' })
   @ApiParam({ name: 'id', description: 'Project ID', type: String })
   @ApiResponse({ status: 204, description: 'Project deleted successfully' })
@@ -107,4 +117,3 @@ export class ProjectsController {
     return this.responseService.deleted();
   }
 }
-

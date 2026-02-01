@@ -3,10 +3,21 @@ import { ResponseCode, ResponseMessage } from './response.enum';
 
 export class ResponseUtil {
   static mapZodErrors(zodError: any): any[] {
+    // Safety check: ensure errors array exists
+    if (!zodError || !zodError.errors || !Array.isArray(zodError.errors)) {
+      return [
+        {
+          field: 'unknown',
+          message: 'Validation error occurred',
+          code: 'VALIDATION_ERROR',
+        },
+      ];
+    }
+
     return zodError.errors.map((error: any) => ({
-      field: error.path.join('.'),
-      message: error.message,
-      code: error.code,
+      field: error.path && Array.isArray(error.path) ? error.path.join('.') : 'unknown',
+      message: error.message || 'Validation failed',
+      code: error.code || 'VALIDATION_ERROR',
     }));
   }
 
