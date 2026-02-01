@@ -3,8 +3,23 @@ import { ResponseCode, ResponseMessage } from './response.enum';
 
 export class ResponseUtil {
   static mapZodErrors(zodError: any): any[] {
+    // Check for issues or errors
+    // ZodError has .issues (raw array) and .errors (getter for issues)
+    const errorsToCheck = zodError.errors || zodError.issues;
+
     // Safety check: ensure errors array exists
-    if (!zodError || !zodError.errors || !Array.isArray(zodError.errors)) {
+    if (!errorsToCheck || !Array.isArray(errorsToCheck)) {
+      // If it's a generic error with a message, use that
+      if (zodError.message) {
+        return [
+          {
+            field: 'global',
+            message: zodError.message,
+            code: 'VALIDATION_ERROR',
+          },
+        ];
+      }
+
       return [
         {
           field: 'unknown',
@@ -14,7 +29,7 @@ export class ResponseUtil {
       ];
     }
 
-    return zodError.errors.map((error: any) => ({
+    return errorsToCheck.map((error: any) => ({
       field: error.path && Array.isArray(error.path) ? error.path.join('.') : 'unknown',
       message: error.message || 'Validation failed',
       code: error.code || 'VALIDATION_ERROR',

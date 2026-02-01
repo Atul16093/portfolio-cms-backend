@@ -37,11 +37,15 @@ export const caseStudyIdSchema = z.object({
 });
 
 // Contact schemas
+// Contact schemas
 export const createContactSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().email(),
-  subject: z.string().min(1).max(255),
   message: z.string().min(1).max(5000),
+});
+
+export const contactIdSchema = z.object({
+  id: z.string().regex(/^\d+$/, 'Invalid ID format'),
 });
 
 // Site Config schemas

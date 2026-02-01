@@ -6,26 +6,44 @@ import { SiteConfig, SiteConfigUpdateInput } from '../../domain/site-config/site
 export class SiteConfigService {
   constructor(private siteConfigQuery: SiteConfigQuery) {}
 
+  /**
+   * Get site configuration
+   * Returns default values if no configuration exists
+   */
   async find(): Promise<SiteConfig> {
-    const config = await this.siteConfigQuery.find();
+    const config = await this.siteConfigQuery.getConfig();
+    
     if (!config) {
-      // Return default config if none exists
+      // Return default empty structure as per requirement
       return {
-        id: '',
-        siteName: 'Portfolio',
-        siteDescription: '',
-        contactEmail: '',
-        socialLinks: {},
-        metaTags: {},
-        createdAt: new Date(),
+        heroTitle: 'Welcome to My Portfolio',
+        heroSubtitle: null,
+        heroDescription: null,
+        primaryCtaText: null,
+        primaryCtaLink: null,
+        secondaryCtaText: null,
+        secondaryCtaLink: null,
+        aboutHeading: null,
+        aboutContent: null,
+        socialLinks: [],
+        metaTitle: null,
+        metaDescription: null,
+        ogImageUrl: null,
+        footerText: null,
+        closingLine: null,
         updatedAt: new Date(),
       };
     }
+    
     return config;
   }
 
+  /**
+   * Update site configuration
+   * Orchestrates the update of the single configuration row
+   */
   async update(input: SiteConfigUpdateInput): Promise<SiteConfig> {
-    return this.siteConfigQuery.update(input);
+    // Business logic: Ensure only the single config row is updated (handled by query layer)
+    return this.siteConfigQuery.updateConfig(input);
   }
 }
-
