@@ -40,6 +40,11 @@ async function bootstrap() {
     .addTag('case-studies', 'Case study management endpoints')
     .addTag('contact', 'Contact form endpoints')
     .addTag('site-config', 'Site configuration endpoints')
+    .addTag('public-projects', 'Public project endpoints')
+    .addTag('public-experience', 'Public experience endpoints')
+    .addTag('public-tech-stack', 'Public tech stack endpoints')
+    .addTag('public-site-config', 'Public site configuration endpoints')
+    .addTag('public-contact', 'Public contact endpoints')
     .addBearerAuth(
       {
         type: 'http',

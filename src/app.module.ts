@@ -60,6 +60,25 @@ import { AdminSessionQuery } from './models/queries/admin-session.query';
 import { AdminUserQuery } from './models/queries/admin-user.query';
 import { JwtService } from '@nestjs/jwt';
 
+// Public API
+import { PublicProjectsQuery } from './models/queries/public/public-projects.query';
+import { PublicExperienceQuery } from './models/queries/public/public-experience.query';
+import { PublicTechStackQuery } from './models/queries/public/public-tech-stack.query';
+import { PublicSiteConfigQuery } from './models/queries/public/public-site-config.query';
+import { PublicContactQuery } from './models/queries/public/public-contact.query';
+
+import { PublicProjectsService } from './services/public/public-projects.service';
+import { PublicExperienceService } from './services/public/public-experience.service';
+import { PublicTechStackService } from './services/public/public-tech-stack.service';
+import { PublicSiteConfigService } from './services/public/public-site-config.service';
+import { PublicContactService } from './services/public/public-contact.service';
+
+import { ProjectsPublicController } from './controller/public/projects.public.controller';
+import { ExperiencePublicController } from './controller/public/experience.public.controller';
+import { TechStackPublicController } from './controller/public/tech-stack.public.controller';
+import { SiteConfigPublicController } from './controller/public/site-config.public.controller';
+import { ContactPublicController } from './controller/public/contact.public.controller';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -79,6 +98,12 @@ import { JwtService } from '@nestjs/jwt';
     ContactController,
     SiteConfigController,
     CmsExperienceController,
+    // Public API
+    ProjectsPublicController,
+    ExperiencePublicController,
+    TechStackPublicController,
+    SiteConfigPublicController,
+    ContactPublicController,
   ],
   providers: [
     AppService,
@@ -116,6 +141,12 @@ import { JwtService } from '@nestjs/jwt';
     ContactQuery,
     SiteConfigQuery,
     ExperienceQuery,
+    // Public Queries
+    PublicProjectsQuery,
+    PublicExperienceQuery,
+    PublicTechStackQuery,
+    PublicSiteConfigQuery,
+    PublicContactQuery,
     // Services
     ProjectService,
     ProjectsService,
@@ -127,6 +158,12 @@ import { JwtService } from '@nestjs/jwt';
     SiteConfigService,
     CmsExperienceService,
     CmsTechStackService,
+    // Public Services
+    PublicProjectsService,
+    PublicExperienceService,
+    PublicTechStackService,
+    PublicSiteConfigService,
+    PublicContactService,
   ],
 })
 export class AppModule {}
