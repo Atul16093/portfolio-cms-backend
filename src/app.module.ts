@@ -30,6 +30,7 @@ import { CaseStudyQuery } from './models/queries/case-study.query';
 import { ContactQuery } from './models/queries/contact.query';
 import { SiteConfigQuery } from './models/queries/site-config.query';
 import { ExperienceQuery } from './models/queries/experience.query';
+import { AboutQuery } from './models/queries/about.query';
 
 // Services
 import { ProjectService } from './services/projects/project.service';
@@ -42,6 +43,7 @@ import { ContactService } from './services/contact/contact.service';
 import { SiteConfigService } from './services/site-config/site-config.service';
 import { CmsExperienceService } from './services/cms-experience/cms-experience.service';
 import { CmsTechStackService } from './services/cms-tech-stack/cms-tech-stack.service';
+import { AboutService } from './services/about/about.service';
 
 // Controllers
 import { ProjectsController } from './controller/projects/projects.controller';
@@ -52,6 +54,7 @@ import { CaseStudiesController } from './controller/case-studies/case-studies.co
 import { ContactController } from './controller/contact/contact.controller';
 import { SiteConfigController } from './controller/site-config/site-config.controller';
 import { CmsExperienceController } from './controller/cms-experience/cms-experience.controller';
+import { AboutController } from './controller/about/about.controller';
 
 // Auth
 import { AuthController } from './controller/auth/auth.controller';
@@ -78,6 +81,7 @@ import { ExperiencePublicController } from './controller/public/experience.publi
 import { TechStackPublicController } from './controller/public/tech-stack.public.controller';
 import { SiteConfigPublicController } from './controller/public/site-config.public.controller';
 import { ContactPublicController } from './controller/public/contact.public.controller';
+import { AboutPublicController } from './controller/public/about.public.controller';
 
 @Module({
   imports: [
@@ -98,12 +102,14 @@ import { ContactPublicController } from './controller/public/contact.public.cont
     ContactController,
     SiteConfigController,
     CmsExperienceController,
+    AboutController,
     // Public API
     ProjectsPublicController,
     ExperiencePublicController,
     TechStackPublicController,
     SiteConfigPublicController,
     ContactPublicController,
+    AboutPublicController,
   ],
   providers: [
     AppService,
@@ -141,6 +147,7 @@ import { ContactPublicController } from './controller/public/contact.public.cont
     ContactQuery,
     SiteConfigQuery,
     ExperienceQuery,
+    AboutQuery,
     // Public Queries
     PublicProjectsQuery,
     PublicExperienceQuery,
@@ -158,6 +165,7 @@ import { ContactPublicController } from './controller/public/contact.public.cont
     SiteConfigService,
     CmsExperienceService,
     CmsTechStackService,
+    AboutService,
     // Public Services
     PublicProjectsService,
     PublicExperienceService,

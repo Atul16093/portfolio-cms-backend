@@ -11,7 +11,6 @@ export class ContactPublicController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Submit a contact form message' })
-  @ApiBody({ type: ContactSubmissionDto })
   @ApiResponse({ status: 200, description: 'Message sent successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @ApiResponse({ status: 429, description: 'Too many requests' })

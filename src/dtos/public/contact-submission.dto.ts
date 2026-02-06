@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { z } from 'zod';
 
-export class ContactSubmissionDto {
-  @ApiProperty({ description: 'Name of the person contacting', example: 'John Doe', minLength: 2, maxLength: 100 })
-  name!: string;
+export const contactSubmissionSchema = z.object({
+  name: z.string().min(2, 'Name is too short').max(100, 'Name is too long'),
+  email: z.string().email('Invalid email address'),
+  message: z.string().min(10, 'Message is too short').max(2000, 'Message is too long'),
+});
 
-  @ApiProperty({ description: 'Email address', example: 'john@example.com' })
-  email!: string;
+export type ContactSubmissionDto = z.infer<typeof contactSubmissionSchema>;
 
-  @ApiProperty({ description: 'Message content', example: 'Hello, I would like to work with you.', minLength: 10, maxLength: 2000 })
-  message!: string;
-}
