@@ -4,6 +4,7 @@ import {
   Post,
   Put,
   Patch,
+  Delete,
   Param,
   Body,
   Query,
@@ -152,5 +153,23 @@ export class CmsProjectsController {
   async toggleFeatured(@Param('uuid') uuid: string) {
     const result = await this.cmsProjectsService.toggleFeatured(uuid);
     return this.responseService.success(result);
+  }
+
+  @Delete(':uuid')
+  @ApiOperation({
+    summary: 'Delete a project',
+    description: 'Delete a project by UUID (Admin only)',
+  })
+  @ApiParam({ name: 'uuid', description: 'Project UUID', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Project deleted successfully',
+    type: StandardApiResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  async delete(@Param('uuid') uuid: string) {
+    await this.cmsProjectsService.delete(uuid);
+    return this.responseService.success({ message: 'Project deleted successfully' });
   }
 }
