@@ -26,10 +26,12 @@ export class DashboardService {
    */
   async getSummary(): Promise<DashboardSummaryResponseDto> {
     // Fetch all metrics in parallel for performance
-    const [projectMetrics, contactMetrics, sessionMetrics] = await Promise.all([
+    const [projectMetrics, contactMetrics, sessionMetrics, techStackMetrics, experienceMetrics] = await Promise.all([
       this.dashboardQuery.getProjectMetrics(),
       this.dashboardQuery.getContactMetrics(),
       this.dashboardQuery.getSessionMetrics(),
+      this.dashboardQuery.getTechStackMetrics(),
+      this.dashboardQuery.getExperienceMetrics(),
     ]);
 
     // Map raw query data to response DTO shape
@@ -45,6 +47,12 @@ export class DashboardService {
       },
       sessions: {
         active: sessionMetrics.active,
+      },
+      techStack: {
+        total: techStackMetrics.total,
+      },
+      experience: {
+        total: experienceMetrics.total,
       },
       generatedAt: new Date().toISOString(),
     };

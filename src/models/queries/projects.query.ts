@@ -390,4 +390,16 @@ export class ProjectsQuery extends BaseQuery {
 
     return row;
   }
+
+  /**
+   * Delete project by UUID
+   * Returns number of rows deleted
+   */
+  async deleteByUuid(trx: Knex.Transaction, uuid: string): Promise<number> {
+    const deletedCount = await trx(this.getTableName())
+      .where({ uuid })
+      .delete();
+    
+    return deletedCount;
+  }
 }
