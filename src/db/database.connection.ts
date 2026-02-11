@@ -10,17 +10,21 @@ export class DatabaseConnection implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     const dbConfig = this.configService.get('database');
-    
     this.knexInstance = knex({
       client: 'postgresql',
-      connection: {
-        host: dbConfig.host,
-        port: dbConfig.port,
-        user: dbConfig.username,
-        password: dbConfig.password,
-        database: dbConfig.database,
-        ssl: dbConfig.ssl,
-      },
+      connection: dbConfig.url
+        ? {
+            connectionString: dbConfig.url,
+            ssl: { rejectUnauthorized: false },
+          }
+        : {
+            host: dbConfig.host,
+            port: dbConfig.port,
+            user: dbConfig.username,
+            password: dbConfig.password,
+            database: dbConfig.database,
+            ssl: { rejectUnauthorized: false },
+          },
       pool: {
         min: 2,
         max: 10,
