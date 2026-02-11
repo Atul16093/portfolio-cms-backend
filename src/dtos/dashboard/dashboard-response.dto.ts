@@ -34,6 +34,22 @@ export class SessionMetricsDto {
 }
 
 /**
+ * Tech Stack metrics for dashboard summary
+ */
+export class TechStackMetricsDto {
+  @ApiProperty({ description: 'Total number of technologies', example: 10 })
+  total!: number;
+}
+
+/**
+ * Experience metrics for dashboard summary
+ */
+export class ExperienceMetricsDto {
+  @ApiProperty({ description: 'Total number of work experiences', example: 5 })
+  total!: number;
+}
+
+/**
  * Dashboard summary response DTO
  * Lightweight system overview for dashboard cards
  */
@@ -46,6 +62,12 @@ export class DashboardSummaryResponseDto {
 
   @ApiProperty({ description: 'Session metrics', type: SessionMetricsDto })
   sessions!: SessionMetricsDto;
+
+  @ApiProperty({ description: 'Tech stack metrics', type: TechStackMetricsDto })
+  techStack!: TechStackMetricsDto;
+
+  @ApiProperty({ description: 'Experience metrics', type: ExperienceMetricsDto })
+  experience!: ExperienceMetricsDto;
 
   @ApiProperty({
     description: 'Timestamp when the summary was generated',

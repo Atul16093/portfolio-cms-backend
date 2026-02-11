@@ -30,6 +30,7 @@ import { CaseStudyQuery } from './models/queries/case-study.query';
 import { ContactQuery } from './models/queries/contact.query';
 import { SiteConfigQuery } from './models/queries/site-config.query';
 import { ExperienceQuery } from './models/queries/experience.query';
+import { AboutQuery } from './models/queries/about.query';
 
 // Services
 import { ProjectService } from './services/projects/project.service';
@@ -42,6 +43,7 @@ import { ContactService } from './services/contact/contact.service';
 import { SiteConfigService } from './services/site-config/site-config.service';
 import { CmsExperienceService } from './services/cms-experience/cms-experience.service';
 import { CmsTechStackService } from './services/cms-tech-stack/cms-tech-stack.service';
+import { AboutService } from './services/about/about.service';
 
 // Controllers
 import { ProjectsController } from './controller/projects/projects.controller';
@@ -52,6 +54,7 @@ import { CaseStudiesController } from './controller/case-studies/case-studies.co
 import { ContactController } from './controller/contact/contact.controller';
 import { SiteConfigController } from './controller/site-config/site-config.controller';
 import { CmsExperienceController } from './controller/cms-experience/cms-experience.controller';
+import { AboutController } from './controller/about/about.controller';
 
 // Auth
 import { AuthController } from './controller/auth/auth.controller';
@@ -59,6 +62,26 @@ import { AuthService } from './services/auth/auth.service';
 import { AdminSessionQuery } from './models/queries/admin-session.query';
 import { AdminUserQuery } from './models/queries/admin-user.query';
 import { JwtService } from '@nestjs/jwt';
+
+// Public API
+import { PublicProjectsQuery } from './models/queries/public/public-projects.query';
+import { PublicExperienceQuery } from './models/queries/public/public-experience.query';
+import { PublicTechStackQuery } from './models/queries/public/public-tech-stack.query';
+import { PublicSiteConfigQuery } from './models/queries/public/public-site-config.query';
+import { PublicContactQuery } from './models/queries/public/public-contact.query';
+
+import { PublicProjectsService } from './services/public/public-projects.service';
+import { PublicExperienceService } from './services/public/public-experience.service';
+import { PublicTechStackService } from './services/public/public-tech-stack.service';
+import { PublicSiteConfigService } from './services/public/public-site-config.service';
+import { PublicContactService } from './services/public/public-contact.service';
+
+import { ProjectsPublicController } from './controller/public/projects.public.controller';
+import { ExperiencePublicController } from './controller/public/experience.public.controller';
+import { TechStackPublicController } from './controller/public/tech-stack.public.controller';
+import { SiteConfigPublicController } from './controller/public/site-config.public.controller';
+import { ContactPublicController } from './controller/public/contact.public.controller';
+import { AboutPublicController } from './controller/public/about.public.controller';
 
 @Module({
   imports: [
@@ -79,6 +102,14 @@ import { JwtService } from '@nestjs/jwt';
     ContactController,
     SiteConfigController,
     CmsExperienceController,
+    AboutController,
+    // Public API
+    ProjectsPublicController,
+    ExperiencePublicController,
+    TechStackPublicController,
+    SiteConfigPublicController,
+    ContactPublicController,
+    AboutPublicController,
   ],
   providers: [
     AppService,
@@ -116,6 +147,13 @@ import { JwtService } from '@nestjs/jwt';
     ContactQuery,
     SiteConfigQuery,
     ExperienceQuery,
+    AboutQuery,
+    // Public Queries
+    PublicProjectsQuery,
+    PublicExperienceQuery,
+    PublicTechStackQuery,
+    PublicSiteConfigQuery,
+    PublicContactQuery,
     // Services
     ProjectService,
     ProjectsService,
@@ -127,6 +165,13 @@ import { JwtService } from '@nestjs/jwt';
     SiteConfigService,
     CmsExperienceService,
     CmsTechStackService,
+    AboutService,
+    // Public Services
+    PublicProjectsService,
+    PublicExperienceService,
+    PublicTechStackService,
+    PublicSiteConfigService,
+    PublicContactService,
   ],
 })
 export class AppModule {}

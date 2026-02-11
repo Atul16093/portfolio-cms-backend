@@ -27,6 +27,20 @@ export interface SessionMetrics {
 }
 
 /**
+ * Tech Stack metrics from database
+ */
+export interface TechStackMetrics {
+  total: number;
+}
+
+/**
+ * Experience metrics from database
+ */
+export interface ExperienceMetrics {
+  total: number;
+}
+
+/**
  * Raw activity row from database queries
  */
 export interface ActivityRow {
@@ -112,6 +126,32 @@ export class DashboardQuery extends BaseQuery {
 
     return {
       active: parseInt(activeResult?.count as string || '0', 10),
+    };
+  }
+
+  /**
+   * Get tech stack metrics (total count)
+   */
+  async getTechStackMetrics(): Promise<TechStackMetrics> {
+    const totalResult = await this.knex('data.tech_stack')
+      .count('id as count')
+      .first();
+
+    return {
+      total: parseInt(totalResult?.count as string || '0', 10),
+    };
+  }
+
+  /**
+   * Get experience metrics (total count)
+   */
+  async getExperienceMetrics(): Promise<ExperienceMetrics> {
+    const totalResult = await this.knex('data.experience')
+      .count('id as count')
+      .first();
+
+    return {
+      total: parseInt(totalResult?.count as string || '0', 10),
     };
   }
 
