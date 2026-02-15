@@ -13,6 +13,10 @@ import authConfig from './config/auth.config';
 import { DatabaseConnection } from './db/database.connection';
 import { SchemaManager } from './db/schema.manager';
 
+// Mail
+import mailConfig from './config/mail.config';
+import { MailService } from './services/mail/mail.service';
+
 // Core
 import { ResponseService, ResponseInterceptor } from './core/response-management';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
@@ -87,7 +91,7 @@ import { AboutPublicController } from './controller/public/about.public.controll
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, authConfig],
+      load: [appConfig, databaseConfig, authConfig, mailConfig],
       envFilePath: ['.env.local', '.env'],
     }),
   ],
@@ -172,6 +176,7 @@ import { AboutPublicController } from './controller/public/about.public.controll
     PublicTechStackService,
     PublicSiteConfigService,
     PublicContactService,
+    MailService,
   ],
 })
 export class AppModule {}

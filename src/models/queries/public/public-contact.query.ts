@@ -19,6 +19,15 @@ export class PublicContactQuery extends BaseQuery {
     await this.knex(this.getTableName()).insert(insertData);
   }
 
+  async findLastByEmail(email: string): Promise<{ created_at: Date } | null> {
+    const result = await this.knex(this.getTableName())
+      .where('email', email)
+      .orderBy('created_at', 'desc')
+      .first();
+
+    return result || null;
+  }
+
   async countRecentByEmail(email: string, minutes: number): Promise<number> {
     const timeAgo = new Date(Date.now() - minutes * 60 * 1000);
     
