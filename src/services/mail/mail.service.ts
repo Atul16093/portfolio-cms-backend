@@ -18,7 +18,9 @@ export class MailService {
     const pass = this.configService.get<string>('mail.pass');
 
     // Using mock credentials if not provided (as per user request "currelt u used moc creds")
+   console.log("Mail creds", user, pass, host, port);
     if (!user || !pass) {
+      console.log("Using mock creds ")
       this.logger.warn('SMTP credentials not provided. Using Ethereal (mock) for testing.');
       nodemailer.createTestAccount().then((account) => {
         this.transporter = nodemailer.createTransport({
@@ -36,6 +38,7 @@ export class MailService {
       });
       return;
     }
+    console.log("Using real creds ")
 
     this.transporter = nodemailer.createTransport({
       host,
@@ -65,6 +68,7 @@ export class MailService {
         subject,
         html,
       });
+      console.log("Mail sent", info);
       this.logger.log(`Message sent: ${info.messageId}`);
       
       // If using Ethereal, log the preview URL
