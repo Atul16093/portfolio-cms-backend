@@ -18,7 +18,6 @@ export class MailService {
     const pass = this.configService.get<string>('mail.pass');
 
     // Using mock credentials if not provided (as per user request "currelt u used moc creds")
-   console.log("Mail creds", user, pass, host, port);
     if (!user || !pass) {
       console.log("Using mock creds ")
       this.logger.warn('SMTP credentials not provided. Using Ethereal (mock) for testing.');
@@ -48,7 +47,7 @@ export class MailService {
         user,
         pass,
       },
-    });
+    }); 
   }
 
   async sendMail(to: string, subject: string, html: string): Promise<void> {
