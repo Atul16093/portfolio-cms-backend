@@ -2,11 +2,13 @@ import { Injectable, BadRequestException, HttpException, HttpStatus, Logger } fr
 import { PublicContactQuery } from '../../models/queries/public/public-contact.query';
 import { MailService } from '../mail/mail.service';
 import { z } from 'zod';
+import { ResponseCode } from '../../common/enums/response-codes.enum';
+import { ContactMessages } from '../../common/constants/contact.constants';
 
 const contactSchema = z.object({
-  name: z.string().min(2, 'Name is too short').max(100, 'Name is too long'),
-  email: z.string().email('Invalid email address'),
-  message: z.string().min(10, 'Message is too short').max(2000, 'Message is too long'),
+  name: z.string().min(2, ContactMessages.NAME_TOO_SHORT).max(100, ContactMessages.NAME_TOO_LONG),
+  email: z.string().email(ContactMessages.INVALID_EMAIL),
+  message: z.string().min(10, ContactMessages.MESSAGE_TOO_SHORT).max(2000, ContactMessages.MESSAGE_TOO_LONG),
 });
 
 @Injectable()
@@ -22,34 +24,42 @@ export class PublicContactService {
     // Zod Validation
     const validation = contactSchema.safeParse(data);
     if (!validation.success) {
+      const firstError = validation.error.issues[0]?.message || ContactMessages.INVALID_INPUT;
       throw new BadRequestException({
-        message: 'Validation failed',
-        errors: validation.error.format(),
+        message: firstError,
+        errors: validation.error.issues.map(issue => ({
+          field: issue.path.join('.'),
+          message: issue.message,
+        })),
+        code: ResponseCode.VALIDATION_ERROR,
       });
     }
 
     // Basic Rate Limiting: Check submissions from this email in last hour
     const recentCount = await this.contactQuery.countRecentByEmail(data.email, 60);
-    if (recentCount >= 5) { // Increased limit slightly
-      throw new HttpException(
-        'Too many submissions from this email address. Please try again later.',
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
+    if (recentCount >= 5) {
+      this.logger.warn(`Rate limit exceeded for email: ${data.email}`);
+      throw new HttpException({
+        message: ContactMessages.RATE_LIMIT_EXCEEDED,
+        code: ResponseCode.RATE_LIMIT_EXCEEDED,
+      }, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     // Check existing contact for notification logic
-    // We check BEFORE saving the new one to avoid finding the current one
     const lastContact = await this.contactQuery.findLastByEmail(data.email);
     
     // Save the contact first to ensure data persistence
-    await this.contactQuery.create(data);
+    try {
+      await this.contactQuery.create(data);
+    } catch (error) {
+      this.logger.error(`Failed to save contact for ${data.email}`, error);
+      throw new HttpException({
+        message: ContactMessages.DATABASE_SAVE_ERROR,
+        code: ResponseCode.DATABASE_ERROR,
+      }, HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     // Notification Logic:
-    // 1. If no previous contact, send email.
-    // 2. If previous contact exists, check if it was created < 24 hours ago.
-    //    If < 24h, DO NOT send email.
-    //    If > 24h, send email.
-    
     let shouldSendEmail = true;
 
     if (lastContact) {
@@ -74,6 +84,10 @@ export class PublicContactService {
       }
     }
 
-    return { success: true, message: 'Message sent successfully' };
+    return { 
+      success: true, 
+      message: ContactMessages.SUBMISSION_SUCCESS,
+      code: ResponseCode.CONTACT_SUBMITTED_SUCCESSFULLY
+    };
   }
 }

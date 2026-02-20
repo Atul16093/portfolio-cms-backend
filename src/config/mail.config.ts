@@ -8,5 +8,6 @@ export default registerAs('mail', () => ({
   user: process.env.MAIL_USER,
   pass: process.env.MAIL_PASS,
   from: process.env.MAIL_FROM || 'no-reply@example.com',
-  to: process.env.MAIL_TO || 'admin@example.com', // The admin email needed to shoot to me
+  to: process.env.MAIL_TO || 'admin@example.com',
+  brevoApiKey: process.env.BREVO_API_KEY,
 }));
